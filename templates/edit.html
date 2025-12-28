@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>編集</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <h1>メモ編集</h1>
+
+  {% if error %}
+    <p class="alert alert-error">{{ error }}</p>
+  {% endif %}
+
+  <form method="post" action="/update/{{ memo.id }}" class="memo-form">
+    <div class="memo-field">
+      <textarea name="text" rows="1">{{ memo.text }}</textarea>
+    </div>
+    <button type="submit">更新</button>
+    <a href="/">戻る</a>
+  </form>
+
+  <script>
+    (function () {
+      const ta = document.querySelector('textarea[name="text"]');
+      if (!ta) return;
+
+      const maxLines = 5;
+
+      function px(n) { return Math.ceil(n) + "px"; }
+
+      function getLineHeight(el) {
+        const lh = getComputedStyle(el).lineHeight;
+        const n = parseFloat(lh);
+        if (!Number.isFinite(n)) return 24;
+        return n;
+      }
+
+      function resize() {
+        const cs = getComputedStyle(ta);
+        const lineHeight = getLineHeight(ta);
+        const padding = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+        const maxHeight = lineHeight * maxLines + padding;
+
+        ta.style.height = "auto";
+        const needed = ta.scrollHeight;
+
+        ta.style.height = px(Math.min(needed, maxHeight));
+        ta.style.overflowY = (needed > maxHeight) ? "auto" : "hidden";
+      }
+
+      ta.addEventListener("input", resize);
+      window.addEventListener("load", resize);
+      resize();
+    })();
+  </script>
+
+</body>
+</html>

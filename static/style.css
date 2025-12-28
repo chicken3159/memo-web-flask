@@ -1,0 +1,137 @@
+:root{
+  --container: 720px;
+  --memo-width: 588px;      /* ←ここを増減すると入力も一覧も同じだけ変わる */
+  --line: 24px;
+  --radius: 10px;
+  --border: 1px solid #ccc;
+}
+
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  max-width: var(--container);
+  margin: 40px auto;
+  padding: 0 16px;
+  line-height: 1.6;
+}
+
+h1{ margin-bottom: 16px; }
+
+button{
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  background: #fff;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+button:hover{ filter: brightness(0.95); }
+
+a{
+  text-decoration: none;
+  border: 1px solid #bbb;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  color: inherit;
+}
+a:hover{ filter: brightness(0.95); }
+
+/* エラー */
+.alert{
+  border: 1px solid #f0b4b4;
+  background: #fff5f5;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-weight: 600;
+}
+.alert-error{ color: #b00020; }
+
+/* 一覧の左インデントを消す（これが幅ズレの主因） */
+ul{
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* 1行（左：本文 / 右：ボタン群） */
+.memo-item{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+/* 入力欄と表示欄の“同じ幅の箱” */
+.memo-field{
+  width: var(--memo-width);
+  flex: 0 0 var(--memo-width);
+  max-width: 100%;
+}
+
+/* 画面が狭いときは全幅にする */
+@media (max-width: 600px){
+  .memo-field{
+    width: 100%;
+    flex: 1 1 auto;
+  }
+}
+
+/* 入力：textarea */
+.memo-field textarea{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: var(--border);
+  border-radius: var(--radius);
+
+  font: inherit;
+  line-height: var(--line);
+
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  resize: none;
+  overflow-y: auto;
+}
+
+/* 表示：本文（入力と同じ折り返し） */
+.memo-text{
+  font: inherit;
+  line-height: var(--line);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 右：操作 */
+.memo-actions{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.memo-actions form{ margin: 0; }
+
+/* 入力と表示の文字設定を完全に一致させる */
+.memo-field textarea,
+.memo-text {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: var(--line);
+  font-kerning: normal;
+  font-variant-ligatures: none;
+}
+
+/* 追加フォーム：左に入力、右に追加ボタン */
+.memo-form {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* 追加ボタンを編集・削除と同じ縦位置に */
+.memo-form button {
+  white-space: nowrap;
+  align-self: flex-start;
+}
+

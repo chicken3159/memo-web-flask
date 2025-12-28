@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>Webメモ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<script>
+  (function () {
+    const textarea = document.getElementById("memo-input");
+    if (!textarea) return;
+
+    textarea.addEventListener("keydown", function (e) {
+      // Enterのみ → 送信
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // 改行を止める
+
+        // 直近の form を送信
+        const form = textarea.closest("form");
+        if (form) form.submit();
+      }
+      // Shift+Enter は何もしない（＝改行）
+    });
+  })();
+</script>
+
+<body>
+  <h1>Webメモ</h1>
+
+  {% if error %}
+    <p class="alert alert-error">{{ error }}</p>
+  {% endif %}
+
+  <form method="post" action="/add" class="memo-form">
+    <div class="memo-field">
+      <textarea id="memo-input" name="text" placeholder="メモを入力" rows="1"></textarea>
+    </div>
+    <button type="submit">追加</button>
+  </form>
+
+  <ul>
+    {% for m in memos %}
+      <li class="memo-item">
+        <div class="memo-field">
+          <div class="memo-text">{{ m.text }}</div>
+        </div>
+
+        <span class="memo-actions">
+          <a href="/edit/{{ m.id }}">編集</a>
+          <form method="post" action="/delete/{{ m.id }}" onsubmit="return confirm('本当に削除しますか？');">
+            <button type="submit">削除</button>
+          </form>
+        </span>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <script>
+    (function () {
+      const ta = document.querySelector('textarea[name="text"]');
+      if (!ta) return;
+
+      // Enter送信 / Shift+Enter改行
+      ta.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          const form = ta.closest("form");
+          if (form) form.submit();
+        }
+      });
+
+      // 5行まで自動伸縮
+      const maxLines = 5;
+
+      function px(n) { return Math.ceil(n) + "px"; }
+  
+      function getLineHeight(el) {
+        const lh = getComputedStyle(el).lineHeight;
+        const n = parseFloat(lh);
+        if (!Number.isFinite(n)) return 24;
+        return n;
+      }
+
+      function resize() {
+        const cs = getComputedStyle(ta);
+        const lineHeight = getLineHeight(ta);
+        const padding = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+        const maxHeight = lineHeight * maxLines + padding;
+
+        ta.style.height = "auto";
+        const needed = ta.scrollHeight;
+
+        ta.style.height = px(Math.min(needed, maxHeight));
+        ta.style.overflowY = (needed > maxHeight) ? "auto" : "hidden";
+      }
+
+      ta.addEventListener("input", resize);
+      window.addEventListener("load", resize);
+      resize();
+    })();
+  </script>
+
+
+</body>
+</html>
